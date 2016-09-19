@@ -1,0 +1,10 @@
+name: DistributionChest
+main: me.cameronh.distribution.Distribution
+version: 0.1
+author: cameronh
+depend: 
+
+commands:
+    distribution:
+      usage:
+        /<command>
