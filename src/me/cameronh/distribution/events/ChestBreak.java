@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import me.cameronh.distribution.config.Message;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ChestBreak implements Listener {
-	private static FileConfiguration chestConfig = SetChest.chestConfig;
+	private static FileConfiguration chestConfig = SetChest.getConfig();
 	@EventHandler
 	public void clickBlock (PlayerInteractEvent event) {
 		if(event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -33,7 +35,7 @@ public class ChestBreak implements Listener {
 								event.getClickedBlock().getLocation().getWorld().playEffect(location, Effect.SMOKE, 10, 10);
 								ItemStack item = (ItemStack) items.get(i);
 								event.getPlayer().getInventory().addItem(item);
-								event.getPlayer().sendMessage("Вам выпал предмет: " + item.getType() + " в количестве " + item.getAmount() + "штук");
+								event.getPlayer().sendMessage(Message.getConfig().getString("Message.Prefix") + Message.getConfig().getString("Message.Drop").replace("{item}", "" + item.getType()).replace("{amount}", "" + item.getAmount()));
 								list.remove(j);
 							}
 						}
