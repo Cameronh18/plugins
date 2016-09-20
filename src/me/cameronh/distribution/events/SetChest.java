@@ -20,8 +20,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class SetChest implements Listener {
 
-	public static File chestFile = new File("plugins/DistributionChest", "Chest.yml");
-	public static FileConfiguration chestConfig = YamlConfiguration.loadConfiguration(chestFile);
+	private static File chestFile = new File("plugins/DistributionChest", "Chest.yml");
+	private static FileConfiguration chestConfig = YamlConfiguration.loadConfiguration(chestFile);
+	public static FileConfiguration getConfig() {
+		return chestConfig;
+	}
 
 	public static void createConfig() {
 		if(chestConfig.getString("Chest") == null) {
@@ -32,9 +35,9 @@ public class SetChest implements Listener {
 	public static void setChest(Player player) {
 		ItemStack saveChest = new ItemStack(Material.CHEST, 1);
 		ItemMeta saveMeta = saveChest.getItemMeta();
-		saveMeta.setDisplayName(ChatColor.GOLD + "Сохранить сундук");
+		saveMeta.setDisplayName(ChatColor.GOLD + "РЎРѕС…СЂР°РЅРёС‚СЊ СЃСѓРЅРґСѓРє");
 		saveChest.setItemMeta(saveMeta);
-		Inventory inventory = Bukkit.createInventory(null, 54, "Сундук для раздачи");
+		Inventory inventory = Bukkit.createInventory(null, 54, "РЎСѓРЅРґСѓРє РґР»СЏ СЂР°Р·РґР°С‡Рё");
 		inventory.setItem(49, saveChest);
 		if(chestConfig.get("Chest") != null){
 			ItemStack[] contents = inventory.getContents();
@@ -52,7 +55,7 @@ public class SetChest implements Listener {
 	@EventHandler
 	public void onClickInventory(InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
-		if(event.getInventory().getName().equalsIgnoreCase("Сундук для раздачи")) {
+		if(event.getInventory().getName().equalsIgnoreCase("РЎСѓРЅРґСѓРє РґР»СЏ СЂР°Р·РґР°С‡Рё")) {
 			if(event.getRawSlot() == 49) {
 				event.setCancelled(true);
 				chestConfig.set("Chest", null);
@@ -75,8 +78,6 @@ public class SetChest implements Listener {
 			}
 		}
 	}
-
-	@EventHandler
 
 	public static void saveConfig() {
 		try {
