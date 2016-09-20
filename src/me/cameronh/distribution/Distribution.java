@@ -1,6 +1,7 @@
 package me.cameronh.distribution;
 
 import me.cameronh.distribution.config.Default;
+import me.cameronh.distribution.config.Message;
 import me.cameronh.distribution.events.ChestBreak;
 import me.cameronh.distribution.events.SetChest;
 
@@ -24,10 +25,12 @@ public class Distribution extends JavaPlugin {
 		getCommand("distribution").setExecutor(new Commands());
 		Default.defaultConfig = getConfig();
 		Default.createConfig();
+		SetChest.createConfig();
+		Message.createConfig();
 		saveConfig();
 		reloadConfig();
-		SetChest.createConfig();
 		SetChest.saveConfig();
+		Message.saveConfig();
 	}
     public static WorldEditPlugin getWorldEdit() {
         Plugin worldedit = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
