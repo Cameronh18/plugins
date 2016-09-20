@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import me.cameronh.distribution.Distribution;
 import me.cameronh.distribution.Timer;
 import me.cameronh.distribution.config.Default;
+import me.cameronh.distribution.config.Message;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
@@ -22,36 +23,42 @@ public class SpawnChest {
 	public static ArrayList<Location> listLocation = new ArrayList<Location>();
 	private static BukkitScheduler scheduler = Bukkit.getScheduler();
 	public static void chestSpawn(final Player player) {
-		Runnable runnable = new Runnable() {
-			public void run() {
-				Timer.getTimer(time);
-				if(time > 0) {
-				time -= 20;
-				scheduler.cancelTask(0);
-				}
-			}
-		};
-		scheduler.scheduleSyncRepeatingTask(Distribution.getInstance(), runnable, 0L, 20L);
-		Runnable runnable2 = new Runnable() {
-			final Selection selection = Distribution.getWorldEdit().getSelection(player);
-			public void run() {
-				if(time == 0) {
-					if(i > 0) {
-						int y = selection.getMinimumPoint().getBlockY() + (int)(Math.random() * (selection.getMaximumPoint().getBlockY() - selection.getMinimumPoint().getBlockY()));
-						recSpawn(player, y);
-						i--;
-					}
-					else {
-						i = (Default.defaultConfig.getInt("Distribution.TimeSpawn") * 20) / l;
-						time = Default.defaultConfig.getInt("Distribution.DelayStart") * 20;
-						scheduler.cancelAllTasks();
+		final Selection selection = Distribution.getWorldEdit().getSelection(player);
+		if(selection == null) {
+			player.sendMessage(Message.getConfig().getString("Message.Prefix") + Message.getConfig().getString("Message.NoSelection"));
+		}
+		else {
+			Runnable runnable = new Runnable() {
+				public void run() {
+					Timer.getTimer(time);
+					if(time > 0) {
+						time -= 20;
+						scheduler.cancelTask(0);
 					}
 				}
-			}
-		};
-		scheduler.scheduleSyncRepeatingTask(Distribution.getInstance(), runnable2, 0L, l);
+			};
+			scheduler.scheduleSyncRepeatingTask(Distribution.getInstance(), runnable, 0L, 20L);
+			Runnable runnable2 = new Runnable() {
+				public void run() {
+					if(time == 0) {
+						if(i > 0) {
+							int y = selection.getMinimumPoint().getBlockY() + (int)(Math.random() * (selection.getMaximumPoint().getBlockY() - selection.getMinimumPoint().getBlockY()));
+							recSpawn(player, y);
+							i--;
+						}
+						else {
+							i = (Default.defaultConfig.getInt("Distribution.TimeSpawn") * 20) / l;
+							time = Default.defaultConfig.getInt("Distribution.DelayStart") * 20;
+							Bukkit.broadcastMessage(Message.getConfig().getString("Message.Prefix") + Message.getConfig().getString("Message.End"));
+							scheduler.cancelAllTasks();
+						}
+					}
+				}
+			};
+			scheduler.scheduleSyncRepeatingTask(Distribution.getInstance(), runnable2, 0L, l);
+		}
 	}
-	public static void recSpawn(Player player, int y) {
+	private static void recSpawn(Player player, int y) {
 		final Selection selection = Distribution.getWorldEdit().getSelection(player);
 		int x = selection.getMinimumPoint().getBlockX() + (int)(Math.random() * (selection.getMaximumPoint().getBlockX() - selection.getMinimumPoint().getBlockX()));
 		int z = selection.getMinimumPoint().getBlockZ() + (int)(Math.random() * (selection.getMaximumPoint().getBlockZ() - selection.getMinimumPoint().getBlockZ()));
