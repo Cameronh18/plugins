@@ -1,8 +1,10 @@
 package me.cameronh.distribution;
 
+import me.cameronh.distribution.config.Message;
 import me.cameronh.distribution.events.SetChest;
 import me.cameronh.distribution.events.SpawnChest;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,17 +22,24 @@ public class Commands implements CommandExecutor {
 				final Player player = (Player) sender;
 				if(args.length != 0) {
 					if(args[0].equalsIgnoreCase("chestCreate")) {
-						SetChest.setChest(player);
-						return true;
+						if(player.hasPermission("distribution.chestcreate")) {
+							SetChest.setChest(player);
+							return true;
+						}
+						else {
+							Bukkit.broadcastMessage(Message.getConfig().getString("Message.Prefix") + Message.getConfig().getString("Message.NoPerm"));
+							return true;
+						}
 					}
 					if(args[0].equalsIgnoreCase("chestSpawn")) {
-						SpawnChest.chestSpawn(player);
+						if(player.hasPermission("distribution.chestspawn"))
+							SpawnChest.chestSpawn(player);
 						return true;
 					}
-				}
-				else {
-					sender.sendMessage(ChatColor.RED + "Недостаточно аргуметов");
-					return true;
+					else {
+						Bukkit.broadcastMessage(Message.getConfig().getString("Message.Prefix") + Message.getConfig().getString("Message.NoPerm"));
+						return true;
+					}
 				}
 			}
 		}
